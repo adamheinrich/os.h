@@ -15,6 +15,13 @@ typedef struct {
 	volatile os_task_status_t status;
 } os_task_t;
 
+static enum {
+	OS_STATE_DEFAULT = 1,
+	OS_STATE_INITIALIZED,
+	OS_STATE_TASKS_INITIALIZED,
+	OS_STATE_STARTED,
+} m_state = OS_STATE_DEFAULT;
+
 static struct {
 	os_task_t tasks[OS_CONFIG_MAX_TASKS];
 	volatile uint32_t current_task;
@@ -35,15 +42,22 @@ static void task_finished(void)
 }
 
 os_error_t os_init(void)
-void os_init(void)
 {
+	if (m_state != OS_STATE_DEFAULT)
+		return OS_ERROR_WRONG_STATE;
+
 	memset(&m_task_table, 0, sizeof(m_task_table));
+	m_state = OS_STATE_INITIALIZED;
 
 	return OS_ERROR_OK;
 }
 
 os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack, uint32_t stack_size)
 {
+	if (m_state != OS_STATE_INITIALIZED &&
+	    m_state != OS_STATE_TASKS_INITIALIZED)
+		return OS_ERROR_WRONG_STATE;
+
 	if (m_task_table.size >= OS_CONFIG_MAX_TASKS-1)
 		return OS_ERROR_NO_MEM;
 
@@ -100,6 +114,7 @@ os_error_t os_start(uint32_t systick_ticks)
 
 	/* Start the first task: */
 	os_curr_task = &m_task_table.tasks[m_task_table.current_task];
+	m_state = OS_STATE_STARTED;
 
 	__set_PSP(os_curr_task->sp+64); /* Set PSP to the top of task's stack */
 	__set_CONTROL(0x03); /* Switch to PSP, unprivilleged mode */
