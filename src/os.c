@@ -117,8 +117,8 @@ os_error_t os_start(uint32_t systick_ticks)
 	m_state = OS_STATE_STARTED;
 
 	__set_PSP(os_curr_task->sp+64); /* Set PSP to the top of task's stack */
-	__set_CONTROL(0x03); /* Switch to PSP, unprivilleged mode */
-	__ISB(); /* Exec. ISB after changing CONTORL (recommended) */
+	__set_CONTROL(0x03); /* Switch to Unprivilleged Thread Mode with PSP */
+	__ISB(); /* Execute ISB after changing CONTORL (recommended) */
 
 	os_curr_task->handler();
 
