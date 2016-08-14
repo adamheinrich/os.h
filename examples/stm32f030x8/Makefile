@@ -19,6 +19,7 @@ INC = -I. \
 
 # ASM and C (e.g. startup) source files and linker script outside src directory
 SRC_ASM = $(CUBE_DEVICE_DIR)/Source/Templates/gcc/startup_stm32f030x8.s \
+        ../../src/os_svc_handler.s \
         ../../src/os_pendsv_handler.s
 SRC_C = $(CUBE_DEVICE_DIR)/Source/Templates/system_stm32f0xx.c \
         ../../src/os.c
