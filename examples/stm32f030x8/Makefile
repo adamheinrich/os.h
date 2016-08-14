@@ -22,7 +22,8 @@ SRC_ASM = $(CUBE_DEVICE_DIR)/Source/Templates/gcc/startup_stm32f030x8.s \
         ../../src/os_svc_handler.s \
         ../../src/os_pendsv_handler.s
 SRC_C = $(CUBE_DEVICE_DIR)/Source/Templates/system_stm32f0xx.c \
-        ../../src/os.c
+        ../../src/os.c \
+        ../../src/os_idle_task.c
 SRC_LD = $(CUBE_DIR)/Projects/STM32F030R8-Nucleo/Templates/TrueSTUDIO/STM32F030R8-Nucleo/STM32F030R8_FLASH.ld
 
 # Defines required by included libraries

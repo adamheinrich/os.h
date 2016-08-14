@@ -14,5 +14,6 @@ os_error_t os_init(void);
 os_error_t os_task_init(void (*handler)(void *p_params), void *p_task_params,
 			os_stack_t *p_stack, size_t stack_size);
 os_error_t os_start(uint32_t systick_ticks);
+os_error_t os_delay(uint32_t ticks);
 
 #endif
