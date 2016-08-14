@@ -24,6 +24,14 @@ static struct {
 volatile os_task_t *os_curr_task;
 volatile os_task_t *os_next_task;
 
+static void task_finished(void)
+{
+	/* This function is called when some task handler returns. */
+	volatile uint32_t i = 0;
+	while (1)
+		i++;
+}
+
 void os_init(void)
 {
 	memset(&m_task_table, 0, sizeof(m_task_table));
@@ -44,10 +52,10 @@ bool os_task_init(void (*handler)(void), os_stack_t *p_stack, uint32_t stack_siz
 	/* Save special registers which will be restored on exc. return:
 	   - XPSR: Default value (0x01000000)
 	   - PC: Point to the handler function
-	   - LR: EXC_RETURN value (switch to thread mode and use PSP on return) */
+	   - LR: Point to a function to be called when the handler returns */
 	p_stack[stack_size-1] = 0x01000000;
 	p_stack[stack_size-2] = (uint32_t)handler;
-	p_stack[stack_size-3] = 0xFFFFFFFD;
+	p_stack[stack_size-3] = (uint32_t) &task_finished;
 
 #ifdef OS_CONFIG_DEBUG
 	uint32_t base = (m_task_table.size+1)*1000;
