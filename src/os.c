@@ -52,7 +52,8 @@ os_error_t os_init(void)
 	return OS_ERROR_OK;
 }
 
-os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack, uint32_t stack_size)
+os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack,
+			size_t stack_size)
 {
 	if (m_state != OS_STATE_INITIALIZED &&
 	    m_state != OS_STATE_TASKS_INITIALIZED)
