@@ -69,7 +69,7 @@ os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack,
 	p_task->sp = (uint32_t)(p_stack+stack_size-16);
 	p_task->status = OS_TASK_STATUS_IDLE;
 
-	/* Save special registers which will be restored on exc. return:
+	/* Save init. values of registers which will be restored on exc. return:
 	   - XPSR: Default value (0x01000000)
 	   - PC: Point to the handler function
 	   - LR: Point to a function to be called when the handler returns */
