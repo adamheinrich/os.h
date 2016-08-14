@@ -12,7 +12,7 @@ static void task3_handler(void);
 
 void HardFault_Handler(void)
 {
-	while(1);
+	while (1);
 }
 
 int main(void)

@@ -2,7 +2,7 @@
 
 typedef enum {
 	OS_TASK_STATUS_IDLE = 1,
-	OS_TASK_STATUS_ACTIVE
+	OS_TASK_STATUS_ACTIVE,
 } os_task_status_t;
 
 typedef struct {
