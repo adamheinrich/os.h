@@ -11,7 +11,8 @@ typedef struct {
 	   to locate it safely from assembly implementation of PendSV_Handler).
 	   The compiler might add padding between other structure elements. */
 	volatile uint32_t sp;
-	void (*handler)(void);
+	void (*handler)(void *p_params);
+	void *p_params;
 	volatile os_task_status_t status;
 } os_task_t;
 
@@ -52,8 +53,8 @@ os_error_t os_init(void)
 	return OS_ERROR_OK;
 }
 
-os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack,
-			size_t stack_size)
+os_error_t os_task_init(void (*handler)(void *p_params), void *p_task_params,
+			os_stack_t *p_stack, size_t stack_size)
 {
 	if (m_state != OS_STATE_INITIALIZED &&
 	    m_state != OS_STATE_TASKS_INITIALIZED)
@@ -66,16 +67,19 @@ os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack,
 	   minus 16 words (64 bytes) to leave space for storing 16 registers: */
 	os_task_t *p_task = &m_task_table.tasks[m_task_table.size];
 	p_task->handler = handler;
+	p_task->p_params = p_task_params;
 	p_task->sp = (uint32_t)(p_stack+stack_size-16);
 	p_task->status = OS_TASK_STATUS_IDLE;
 
 	/* Save init. values of registers which will be restored on exc. return:
 	   - XPSR: Default value (0x01000000)
 	   - PC: Point to the handler function
-	   - LR: Point to a function to be called when the handler returns */
+	   - LR: Point to a function to be called when the handler returns
+	   - R0: Point to the handler function's parameter */
 	p_stack[stack_size-1] = 0x01000000;
 	p_stack[stack_size-2] = (uint32_t)handler;
-	p_stack[stack_size-3] = (uint32_t) &task_finished;
+	p_stack[stack_size-3] = (uint32_t)&task_finished;
+	p_stack[stack_size-8] = (uint32_t)p_task_params;
 
 #ifdef OS_CONFIG_DEBUG
 	uint32_t base = (m_task_table.size+1)*1000;
@@ -83,7 +87,7 @@ os_error_t os_task_init(void (*handler)(void), os_stack_t *p_stack,
 	p_stack[stack_size-5] = base+3;   /* R3  */
 	p_stack[stack_size-6] = base+2;   /* R2  */
 	p_stack[stack_size-7] = base+1;   /* R1  */
-	p_stack[stack_size-8] = base+0;   /* R0  */
+	/* p_stack[stack_size-8] is R0 */
 	p_stack[stack_size-9] = base+7;   /* R7  */
 	p_stack[stack_size-10] = base+6;  /* R6  */
 	p_stack[stack_size-11] = base+5;  /* R5  */
@@ -121,7 +125,7 @@ os_error_t os_start(uint32_t systick_ticks)
 	__set_CONTROL(0x03); /* Switch to Unprivilleged Thread Mode with PSP */
 	__ISB(); /* Execute ISB after changing CONTORL (recommended) */
 
-	os_curr_task->handler();
+	os_curr_task->handler(os_curr_task->p_params);
 
 	return OS_ERROR_OK;
 }

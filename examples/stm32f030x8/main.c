@@ -6,9 +6,7 @@
 #define LED_GPIO_PIN		5
 
 static void delay(volatile uint32_t delay_ms);
-static void task1_handler(void);
-static void task2_handler(void);
-static void task3_handler(void);
+static void task_handler(void *p_params);
 
 void HardFault_Handler(void)
 {
@@ -36,11 +34,11 @@ int main(void)
 	err_code = os_init();
 	OS_ERROR_CHECK(err_code);
 
-	err_code = os_task_init(&task1_handler, stack1, 128);
+	err_code = os_task_init(&task_handler, (void *)100000, stack1, 128);
 	OS_ERROR_CHECK(err_code);
-	err_code = os_task_init(&task2_handler, stack2, 128);
+	err_code = os_task_init(&task_handler, (void *)50000, stack2, 128);
 	OS_ERROR_CHECK(err_code);
-	err_code = os_task_init(&task3_handler, stack3, 128);
+	err_code = os_task_init(&task_handler, (void *)10000, stack3, 128);
 	OS_ERROR_CHECK(err_code);
 
 	/* Context switch every second: */
@@ -57,35 +55,15 @@ static void delay(volatile uint32_t time)
 		time--;
 }
 
-static void task1_handler(void)
+static void task_handler(void *p_params)
 {
+	uint32_t delay_time = (uint32_t)p_params;
+
 	while (1) {
 		__disable_irq();
 		LED_GPIOx->ODR ^= (1U << LED_GPIO_PIN);
 		__enable_irq();
 
-		delay(100000);
-	}
-}
-
-static void task2_handler(void)
-{
-	while (1) {
-		__disable_irq();
-		LED_GPIOx->ODR ^= (1U << LED_GPIO_PIN);
-		__enable_irq();
-
-		delay(50000);
-	}
-}
-
-static void task3_handler(void)
-{
-	while (1) {
-		__disable_irq();
-		LED_GPIOx->ODR ^= (1U << LED_GPIO_PIN);
-		__enable_irq();
-
-		delay(10000);
+		delay(delay_time);
 	}
 }
