@@ -15,8 +15,15 @@ void HardFault_Handler(void)
 	while (1);
 }
 
+void os_error_handler(os_error_t error_code, const char *p_file, int line)
+{
+	while (1);
+}
+
 int main(void)
 {
+	os_error_t err_code;
+
 	/* Enable clock for GPIOA and set GPIO pin PA5 as output: */
 	LED_GPIO_ENABLE_CLK();
 	LED_GPIOx->MODER |= (1U << (2*LED_GPIO_PIN));
@@ -26,14 +33,19 @@ int main(void)
 	static os_stack_t stack2[128];
 	static os_stack_t stack3[128];
 
-	os_init();
+	err_code = os_init();
+	OS_ERROR_CHECK(err_code);
 
-	os_task_init(&task1_handler, stack1, 128);
-	os_task_init(&task2_handler, stack2, 128);
-	os_task_init(&task3_handler, stack3, 128);
-	
+	err_code = os_task_init(&task1_handler, stack1, 128);
+	OS_ERROR_CHECK(err_code);
+	err_code = os_task_init(&task2_handler, stack2, 128);
+	OS_ERROR_CHECK(err_code);
+	err_code = os_task_init(&task3_handler, stack3, 128);
+	OS_ERROR_CHECK(err_code);
+
 	/* Context switch every second: */
-	os_start(SystemCoreClock);
+	err_code = os_start(SystemCoreClock);
+	OS_ERROR_CHECK(err_code);
 
 	/* The program should never reach there: */
 	while (1);

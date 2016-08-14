@@ -11,4 +11,8 @@
 /* Enable debugging: */
 // #define OS_CONFIG_DEBUG
 
+/* Enable error checking assertions (OS_ERROR_CHECK) by defining error handler
+   function. See os_error.h for function prototype: */
+//#define OS_CONFIG_ERROR_HANDLER	os_error_handler
+
 #endif
