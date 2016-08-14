@@ -1,5 +1,4 @@
 .DS_Store
 *.sublime-*
 examples/*/build/
-examples/stm32f030x8_uart/
 examples/lib/STM32*
