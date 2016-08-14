@@ -230,7 +230,7 @@ void SysTick_Handler(void)
 		}
 	}
 
-	os_reschedule();
+	reschedule();
 }
 
 void os_svcall_handler(uint8_t svc_num, uint32_t *p_stack_frame)
