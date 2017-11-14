@@ -17,7 +17,7 @@
  * along with os.h.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "os.h"
+#include <os.h>
 
 enum os_task_status {
 	OS_TASK_STATUS_IDLE = 1,
@@ -56,7 +56,6 @@ void SysTick_Handler(void);
 static void task_finished(void)
 {
 	/* This function is called when some task handler returns. */
-	OS_ERROR_HANDLER(OS_ERROR_TASK_FINISHED);
 
 	volatile uint32_t i = 0;
 	while (1)

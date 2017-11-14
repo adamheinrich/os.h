@@ -25,7 +25,14 @@
 #include <string.h>
 
 #include "os_config.h"
-#include <os_error.h>
+
+enum os_error {
+	OS_ERROR_OK = 1,
+	OS_ERROR_WRONG_STATE,
+	OS_ERROR_NO_MEM,
+	OS_ERROR_INVALID_PARAM,
+	OS_ERROR_TASK_FINISHED,
+};
 
 enum os_error os_init(void);
 enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
