@@ -83,12 +83,17 @@ bool os_task_init(void (*handler)(void *p_params), void *p_task_params,
 	if (m_task_table.size >= OS_CONFIG_MAX_TASKS-1)
 		return false;
 
+	if ((stack_size % sizeof(uint32_t)) != 0) /* TODO: Use assert? */
+		return false;
+
+	uint32_t stack_offset = (stack_size/sizeof(uint32_t));
+
 	/* Initialize the task structure and set SP to the top of the stack
 	   minus 16 words (64 bytes) to leave space for storing 16 registers: */
 	struct os_task *p_task = &m_task_table.tasks[m_task_table.size];
 	p_task->handler = handler;
 	p_task->p_params = p_task_params;
-	p_task->sp = (uint32_t)(p_stack+stack_size-16);
+	p_task->sp = (uint32_t)(p_stack+stack_offset-16);
 	p_task->status = OS_TASK_STATUS_IDLE;
 
 	/* Save init. values of registers which will be restored on exc. return:
@@ -96,26 +101,26 @@ bool os_task_init(void (*handler)(void *p_params), void *p_task_params,
 	   - PC: Point to the handler function
 	   - LR: Point to a function to be called when the handler returns
 	   - R0: Point to the handler function's parameter */
-	p_stack[stack_size-1] = 0x01000000;
-	p_stack[stack_size-2] = (uint32_t)handler;
-	p_stack[stack_size-3] = (uint32_t)&task_finished;
-	p_stack[stack_size-8] = (uint32_t)p_task_params;
+	p_stack[stack_offset-1] = 0x01000000;
+	p_stack[stack_offset-2] = (uint32_t)handler;
+	p_stack[stack_offset-3] = (uint32_t)&task_finished;
+	p_stack[stack_offset-8] = (uint32_t)p_task_params;
 
 #ifdef OS_CONFIG_DEBUG
 	uint32_t base = (m_task_table.size+1)*1000;
-	p_stack[stack_size-4] = base+12;  /* R12 */
-	p_stack[stack_size-5] = base+3;   /* R3  */
-	p_stack[stack_size-6] = base+2;   /* R2  */
-	p_stack[stack_size-7] = base+1;   /* R1  */
-	/* p_stack[stack_size-8] is R0 */
-	p_stack[stack_size-9] = base+7;   /* R7  */
-	p_stack[stack_size-10] = base+6;  /* R6  */
-	p_stack[stack_size-11] = base+5;  /* R5  */
-	p_stack[stack_size-12] = base+4;  /* R4  */
-	p_stack[stack_size-13] = base+11; /* R11 */
-	p_stack[stack_size-14] = base+10; /* R10 */
-	p_stack[stack_size-15] = base+9;  /* R9  */
-	p_stack[stack_size-16] = base+8;  /* R8  */
+	p_stack[stack_offset-4] = base+12;  /* R12 */
+	p_stack[stack_offset-5] = base+3;   /* R3  */
+	p_stack[stack_offset-6] = base+2;   /* R2  */
+	p_stack[stack_offset-7] = base+1;   /* R1  */
+	/* p_stack[stack_offset-8] is R0 */
+	p_stack[stack_offset-9] = base+7;   /* R7  */
+	p_stack[stack_offset-10] = base+6;  /* R6  */
+	p_stack[stack_offset-11] = base+5;  /* R5  */
+	p_stack[stack_offset-12] = base+4;  /* R4  */
+	p_stack[stack_offset-13] = base+11; /* R11 */
+	p_stack[stack_offset-14] = base+10; /* R10 */
+	p_stack[stack_offset-15] = base+9;  /* R9  */
+	p_stack[stack_offset-16] = base+8;  /* R8  */
 #endif /* OS_CONFIG_DEBUG */
 
 	m_state = OS_STATE_TASKS_INITIALIZED;

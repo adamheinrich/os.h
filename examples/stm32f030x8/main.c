@@ -52,14 +52,19 @@ int main(void)
 	static uint32_t stack2[128];
 	static uint32_t stack3[128];
 
+	/* Setup task parameters: */
+	uint32_t p1 = 200000;
+	uint32_t p2 = p1/2;
+	uint32_t p3 = p1/4;
+
 	status = os_init();
 	ERROR_CHECK(status);
 
-	status = os_task_init(&task_handler, (void *)200000, stack1, 128);
+	status = os_task_init(&task_handler, (void*)p1, stack1, sizeof(stack1));
 	ERROR_CHECK(status);
-	status = os_task_init(&task_handler, (void *)100000, stack2, 128);
+	status = os_task_init(&task_handler, (void*)p2, stack2, sizeof(stack2));
 	ERROR_CHECK(status);
-	status = os_task_init(&task_handler, (void *)50000, stack3, 128);
+	status = os_task_init(&task_handler, (void*)p3, stack3, sizeof(stack3));
 	ERROR_CHECK(status);
 
 	/* Context switch every second: */
