@@ -24,9 +24,9 @@
 #define LED_GPIOx		GPIOA
 #define LED_GPIO_PIN		5
 
-#define ERROR_CHECK(err_code) \
+#define ERROR_CHECK(status) \
 	do { \
-		if (err_code != OS_ERROR_OK) \
+		if (!(status)) \
 			while (1); \
 	} while (0)
 
@@ -41,7 +41,7 @@ void HardFault_Handler(void)
 
 int main(void)
 {
-	enum os_error err_code;
+	bool status;
 
 	/* Enable clock for GPIOA and set GPIO pin PA5 as output: */
 	LED_GPIO_ENABLE_CLK();
@@ -52,19 +52,19 @@ int main(void)
 	static uint32_t stack2[128];
 	static uint32_t stack3[128];
 
-	err_code = os_init();
-	ERROR_CHECK(err_code);
+	status = os_init();
+	ERROR_CHECK(status);
 
-	err_code = os_task_init(&task_handler, (void *)100000, stack1, 128);
-	ERROR_CHECK(err_code);
-	err_code = os_task_init(&task_handler, (void *)50000, stack2, 128);
-	ERROR_CHECK(err_code);
-	err_code = os_task_init(&task_handler, (void *)10000, stack3, 128);
-	ERROR_CHECK(err_code);
+	status = os_task_init(&task_handler, (void *)100000, stack1, 128);
+	ERROR_CHECK(status);
+	status = os_task_init(&task_handler, (void *)50000, stack2, 128);
+	ERROR_CHECK(status);
+	status = os_task_init(&task_handler, (void *)10000, stack3, 128);
+	ERROR_CHECK(status);
 
 	/* Context switch every second: */
-	err_code = os_start(SystemCoreClock);
-	ERROR_CHECK(err_code);
+	status = os_start(SystemCoreClock);
+	ERROR_CHECK(status);
 
 	/* The program should never reach here: */
 	while (1);

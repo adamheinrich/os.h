@@ -26,17 +26,9 @@
 
 #include "os_config.h"
 
-enum os_error {
-	OS_ERROR_OK = 1,
-	OS_ERROR_WRONG_STATE,
-	OS_ERROR_NO_MEM,
-	OS_ERROR_INVALID_PARAM,
-	OS_ERROR_TASK_FINISHED,
-};
-
-enum os_error os_init(void);
-enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
-			   uint32_t *p_stack, size_t stack_size);
-enum os_error os_start(uint32_t systick_ticks);
+bool os_init(void);
+bool os_task_init(void (*handler)(void *p_params), void *p_task_params,
+		  uint32_t *p_stack, size_t stack_size);
+bool os_start(uint32_t systick_ticks);
 
 #endif /* OS_H */

@@ -62,26 +62,26 @@ static void task_finished(void)
 		i++;
 }
 
-enum os_error os_init(void)
+bool os_init(void)
 {
 	if (m_state != OS_STATE_DEFAULT)
-		return OS_ERROR_WRONG_STATE;
+		return false;
 
 	memset(&m_task_table, 0, sizeof(m_task_table));
 	m_state = OS_STATE_INITIALIZED;
 
-	return OS_ERROR_OK;
+	return true;
 }
 
-enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
-			   uint32_t *p_stack, size_t stack_size)
+bool os_task_init(void (*handler)(void *p_params), void *p_task_params,
+		  uint32_t *p_stack, size_t stack_size)
 {
 	if (m_state != OS_STATE_INITIALIZED &&
 	    m_state != OS_STATE_TASKS_INITIALIZED)
-		return OS_ERROR_WRONG_STATE;
+		return false;
 
 	if (m_task_table.size >= OS_CONFIG_MAX_TASKS-1)
-		return OS_ERROR_NO_MEM;
+		return false;
 
 	/* Initialize the task structure and set SP to the top of the stack
 	   minus 16 words (64 bytes) to leave space for storing 16 registers: */
@@ -121,13 +121,13 @@ enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
 	m_state = OS_STATE_TASKS_INITIALIZED;
 	m_task_table.size++;
 
-	return OS_ERROR_OK;
+	return true;
 }
 
-enum os_error os_start(uint32_t systick_ticks)
+bool os_start(uint32_t systick_ticks)
 {
 	if (m_state != OS_STATE_TASKS_INITIALIZED)
-		return OS_ERROR_WRONG_STATE;
+		return false;
 
 	NVIC_SetPriority(PendSV_IRQn, 0xff); /* Lowest possible priority */
 	NVIC_SetPriority(SysTick_IRQn, 0x00); /* Highest possible priority */
@@ -135,7 +135,7 @@ enum os_error os_start(uint32_t systick_ticks)
 	/* Start the SysTick timer: */
 	uint32_t ret_val = SysTick_Config(systick_ticks);
 	if (ret_val != 0)
-		return OS_ERROR_INVALID_PARAM;
+		return false;
 
 	/* Start the first task: */
 	os_curr_task = &m_task_table.tasks[m_task_table.current_task];
@@ -147,7 +147,7 @@ enum os_error os_start(uint32_t systick_ticks)
 
 	os_curr_task->handler(os_curr_task->p_params);
 
-	return OS_ERROR_OK;
+	return true;
 }
 
 void SysTick_Handler(void)
