@@ -1,4 +1,3 @@
-.DS_Store
 *.sublime-*
 examples/*/build/
 examples/lib/STM32*
