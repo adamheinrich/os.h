@@ -1,0 +1,3 @@
+[submodule "examples/cm-makefile"]
+	path = examples/cm-makefile
+	url = https://github.com/adamheinrich/cm-makefile.git

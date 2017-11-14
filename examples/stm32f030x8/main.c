@@ -1,10 +1,11 @@
 #include <stm32f0xx.h>
-#include "os.h"
+#include <os.h>
 
 #define LED_GPIO_ENABLE_CLK()	RCC->AHBENR |= RCC_AHBENR_GPIOAEN
 #define LED_GPIOx		GPIOA
 #define LED_GPIO_PIN		5
 
+void HardFault_Handler(void);
 static void delay(volatile uint32_t delay_ms);
 static void task_handler(void *p_params);
 
@@ -15,6 +16,10 @@ void HardFault_Handler(void)
 
 void os_error_handler(os_error_t error_code, const char *p_file, int line)
 {
+	(void)error_code;
+	(void)p_file;
+	(void)line;
+
 	while (1);
 }
 
