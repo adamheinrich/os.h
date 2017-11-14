@@ -32,6 +32,8 @@ static struct {
 volatile os_task_t *os_curr_task;
 volatile os_task_t *os_next_task;
 
+void SysTick_Handler(void);
+
 static void task_finished(void)
 {
 	/* This function is called when some task handler returns. */
