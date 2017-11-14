@@ -19,12 +19,12 @@
 
 #include "os.h"
 
-typedef enum {
+enum os_task_status {
 	OS_TASK_STATUS_IDLE = 1,
 	OS_TASK_STATUS_ACTIVE,
-} os_task_status_t;
+};
 
-typedef struct {
+struct os_task {
 	/* The stack pointer (sp) has to be the first element as it is located
 	   at the same address as the structure itself (which makes it possible
 	   to locate it safely from assembly implementation of PendSV_Handler).
@@ -32,8 +32,8 @@ typedef struct {
 	volatile uint32_t sp;
 	void (*handler)(void *p_params);
 	void *p_params;
-	volatile os_task_status_t status;
-} os_task_t;
+	volatile enum os_task_status status;
+};
 
 static enum {
 	OS_STATE_DEFAULT = 1,
@@ -43,13 +43,13 @@ static enum {
 } m_state = OS_STATE_DEFAULT;
 
 static struct {
-	os_task_t tasks[OS_CONFIG_MAX_TASKS];
+	struct os_task tasks[OS_CONFIG_MAX_TASKS];
 	volatile uint32_t current_task;
 	uint32_t size;
 } m_task_table;
 
-volatile os_task_t *os_curr_task;
-volatile os_task_t *os_next_task;
+volatile struct os_task *os_curr_task;
+volatile struct os_task *os_next_task;
 
 void SysTick_Handler(void);
 
@@ -63,7 +63,7 @@ static void task_finished(void)
 		i++;
 }
 
-os_error_t os_init(void)
+enum os_error os_init(void)
 {
 	if (m_state != OS_STATE_DEFAULT)
 		return OS_ERROR_WRONG_STATE;
@@ -74,8 +74,8 @@ os_error_t os_init(void)
 	return OS_ERROR_OK;
 }
 
-os_error_t os_task_init(void (*handler)(void *p_params), void *p_task_params,
-			os_stack_t *p_stack, size_t stack_size)
+enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
+			   uint32_t *p_stack, size_t stack_size)
 {
 	if (m_state != OS_STATE_INITIALIZED &&
 	    m_state != OS_STATE_TASKS_INITIALIZED)
@@ -86,7 +86,7 @@ os_error_t os_task_init(void (*handler)(void *p_params), void *p_task_params,
 
 	/* Initialize the task structure and set SP to the top of the stack
 	   minus 16 words (64 bytes) to leave space for storing 16 registers: */
-	os_task_t *p_task = &m_task_table.tasks[m_task_table.size];
+	struct os_task *p_task = &m_task_table.tasks[m_task_table.size];
 	p_task->handler = handler;
 	p_task->p_params = p_task_params;
 	p_task->sp = (uint32_t)(p_stack+stack_size-16);
@@ -125,7 +125,7 @@ os_error_t os_task_init(void (*handler)(void *p_params), void *p_task_params,
 	return OS_ERROR_OK;
 }
 
-os_error_t os_start(uint32_t systick_ticks)
+enum os_error os_start(uint32_t systick_ticks)
 {
 	if (m_state != OS_STATE_TASKS_INITIALIZED)
 		return OS_ERROR_WRONG_STATE;

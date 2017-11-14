@@ -33,9 +33,9 @@ void HardFault_Handler(void)
 	while (1);
 }
 
-void os_error_handler(os_error_t error_code, const char *p_file, int line)
+void os_error_handler(enum os_error err_code, const char *p_file, int line)
 {
-	(void)error_code;
+	(void)err_code;
 	(void)p_file;
 	(void)line;
 
@@ -44,16 +44,16 @@ void os_error_handler(os_error_t error_code, const char *p_file, int line)
 
 int main(void)
 {
-	os_error_t err_code;
+	enum os_error err_code;
 
 	/* Enable clock for GPIOA and set GPIO pin PA5 as output: */
 	LED_GPIO_ENABLE_CLK();
 	LED_GPIOx->MODER |= (1U << (2*LED_GPIO_PIN));
 
 	/* Initialize task stacks: */
-	static os_stack_t stack1[128];
-	static os_stack_t stack2[128];
-	static os_stack_t stack3[128];
+	static uint32_t stack1[128];
+	static uint32_t stack2[128];
+	static uint32_t stack3[128];
 
 	err_code = os_init();
 	OS_ERROR_CHECK(err_code);
