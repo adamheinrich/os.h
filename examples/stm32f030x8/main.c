@@ -55,11 +55,11 @@ int main(void)
 	status = os_init();
 	ERROR_CHECK(status);
 
-	status = os_task_init(&task_handler, (void *)100000, stack1, 128);
+	status = os_task_init(&task_handler, (void *)200000, stack1, 128);
 	ERROR_CHECK(status);
-	status = os_task_init(&task_handler, (void *)50000, stack2, 128);
+	status = os_task_init(&task_handler, (void *)100000, stack2, 128);
 	ERROR_CHECK(status);
-	status = os_task_init(&task_handler, (void *)10000, stack3, 128);
+	status = os_task_init(&task_handler, (void *)50000, stack3, 128);
 	ERROR_CHECK(status);
 
 	/* Context switch every second: */
