@@ -32,4 +32,4 @@ enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
 			   uint32_t *p_stack, size_t stack_size);
 enum os_error os_start(uint32_t systick_ticks);
 
-#endif
+#endif /* OS_H */

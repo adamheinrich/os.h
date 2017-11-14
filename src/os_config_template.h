@@ -34,4 +34,4 @@
    function. See os_error.h for function prototype: */
 //#define OS_CONFIG_ERROR_HANDLER	os_error_handler
 
-#endif
+#endif /* OS_CONFIG_H */

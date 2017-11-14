@@ -49,6 +49,6 @@ void OS_CONFIG_ERROR_HANDLER(enum os_error err_code, const char *p_file,
 #define OS_ERROR_HANDLER(err_code)	(void)(err_code)
 #define OS_ERROR_CHECK(err_code)	(void)(err_code)
 
-#endif
+#endif /* OS_CONFIG_ERROR_HANDLER */
 
-#endif
+#endif /* OS_ERROR_H */

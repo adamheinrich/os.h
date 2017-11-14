@@ -117,7 +117,7 @@ enum os_error os_task_init(void (*handler)(void *p_params), void *p_task_params,
 	p_stack[stack_size-14] = base+10; /* R10 */
 	p_stack[stack_size-15] = base+9;  /* R9  */
 	p_stack[stack_size-16] = base+8;  /* R8  */
-#endif
+#endif /* OS_CONFIG_DEBUG */
 
 	m_state = OS_STATE_TASKS_INITIALIZED;
 	m_task_table.size++;
