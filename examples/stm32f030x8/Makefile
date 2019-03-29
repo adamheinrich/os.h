@@ -39,8 +39,12 @@ SRC_LD = $(CUBE_DIR)/Projects/STM32F030R8-Nucleo/Templates/TrueSTUDIO/STM32F030R
 # Defines required by included libraries
 DEF = -DSTM32F030x8
 
-include ../cm-makefile/common.mk
+# OpenOCD configuration
+OPENOCD = openocd -f board/st_nucleo_f0.cfg
+
+include ../cm-makefile/config.mk
 include ../cm-makefile/openocd.mk
+include ../cm-makefile/rules.mk
 
 # Disable GCC warnings which are triggered by the STM32CubeF0 SDK
 WARNFLAGS += -Wno-undef -Wno-conversion
