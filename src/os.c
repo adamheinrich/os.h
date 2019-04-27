@@ -44,8 +44,8 @@ static enum state {
 
 static struct task_table {
 	struct os_task tasks[OS_CONFIG_MAX_TASKS];
-	volatile uint32_t current_task;
-	uint32_t size;
+	volatile size_t current_task;
+	size_t size;
 } task_table;
 
 volatile struct os_task *os_curr_task;
@@ -57,7 +57,7 @@ static void task_finished(void)
 {
 	/* This function is called when some task handler returns. */
 
-	volatile uint32_t i = 0;
+	volatile unsigned int i = 0;
 	while (1)
 		i++;
 }
@@ -108,7 +108,7 @@ bool os_task_init(void (*handler)(void *params), void *task_params,
 	stack[stack_offset-8] = (uint32_t)task_params;
 
 #ifdef OS_CONFIG_DEBUG
-	uint32_t base = (task_table.size+1)*1000;
+	size_t base = (task_table.size+1)*1000;
 	stack[stack_offset-4] = base+12;  /* R12 */
 	stack[stack_offset-5] = base+3;   /* R3  */
 	stack[stack_offset-6] = base+2;   /* R2  */
