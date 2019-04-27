@@ -18,6 +18,7 @@
  */
 
 #include <os.h>
+#include <string.h>
 
 enum os_task_status {
 	OS_TASK_STATUS_IDLE = 1,
