@@ -98,11 +98,12 @@ bool os_task_init(void (*handler)(void *p_params), void *p_task_params,
 
 	/* Save init. values of registers which will be restored on exc. return:
 	   - XPSR: Default value (0x01000000)
-	   - PC: Point to the handler function
+	   - PC: Point to the handler function (with LSB masked because the
+	         behavior is unpredictable if pc<0> == '1' on exc. return)
 	   - LR: Point to a function to be called when the handler returns
 	   - R0: Point to the handler function's parameter */
 	p_stack[stack_offset-1] = 0x01000000;
-	p_stack[stack_offset-2] = (uint32_t)handler;
+	p_stack[stack_offset-2] = (uint32_t)handler & ~0x01UL;
 	p_stack[stack_offset-3] = (uint32_t)&task_finished;
 	p_stack[stack_offset-8] = (uint32_t)p_task_params;
 
