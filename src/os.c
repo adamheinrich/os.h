@@ -80,7 +80,7 @@ bool os_task_init(void (*handler)(void *params), void *task_params,
 	    state != STATE_TASKS_INITIALIZED)
 		return false;
 
-	if (task_table.size >= OS_CONFIG_MAX_TASKS-1)
+	if (task_table.size >= OS_CONFIG_MAX_TASKS)
 		return false;
 
 	if ((stack_size % sizeof(uint32_t)) != 0) /* TODO: Use assert? */
