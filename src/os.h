@@ -27,8 +27,8 @@
 #include "os_config.h"
 
 bool os_init(void);
-bool os_task_init(void (*handler)(void *p_params), void *p_task_params,
-		  uint32_t *p_stack, size_t stack_size);
+bool os_task_init(void (*handler)(void *params), void *task_params,
+		  uint32_t *stack, size_t stack_size);
 bool os_start(uint32_t systick_ticks);
 
 #endif /* OS_H */

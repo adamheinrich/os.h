@@ -32,7 +32,7 @@
 
 void HardFault_Handler(void);
 static void delay(volatile uint32_t delay_ms);
-static void task_handler(void *p_params);
+static void task_handler(void *params);
 
 void HardFault_Handler(void)
 {
@@ -81,9 +81,9 @@ static void delay(volatile uint32_t time)
 		time--;
 }
 
-static void task_handler(void *p_params)
+static void task_handler(void *params)
 {
-	uint32_t delay_time = (uint32_t)p_params;
+	uint32_t delay_time = (uint32_t)params;
 
 	while (1) {
 		__disable_irq();
