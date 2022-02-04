@@ -1,3 +1,6 @@
 [submodule "examples/cm-makefile"]
 	path = examples/cm-makefile
 	url = https://github.com/adamheinrich/cm-makefile.git
+[submodule "examples/stm32f030x8/STM32CubeF0"]
+	path = examples/stm32f030x8/STM32CubeF0
+	url = https://github.com/STMicroelectronics/STM32CubeF0.git

@@ -1,8 +1,7 @@
 # STM32F030x8 Example
 
 The example can be run on [STM32F030R8 Nucleo][1] board. It requires the
-[STM32Cube][2] library. Download it and unpack it into directory
-``STM32Cube_FW_XX_Vx.x.x``.
+[STM32Cube][2] library which is included as a git submodule.
 
 Flash the code using ``make flash`` and observe how an onboard LED connected to
 ``PA5`` changes frequency every second.
