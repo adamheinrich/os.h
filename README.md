@@ -11,5 +11,5 @@ either version 3 of the License, or (at your option) any later version.
 
 See `COPYING` for details.
 
-[1]: https://www.adamheinrich.com/blog/2016/07/context-switch-on-the-arm-cortex-m0/
+[1]: https://www.adamh.cz/blog/2016/07/context-switch-on-the-arm-cortex-m0/
 
